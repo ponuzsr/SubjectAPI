@@ -53,6 +53,26 @@ namespace SubjectAPI.Models
                 return NotFound();
             }
         }
+        [HttpPut("{id}")]
+        public ActionResult Put(Guid id, UpdateSubjectDto updateSubjectDto) {
+            using(var context = new SubjectDbContext())
+            {
+                var existigSubject = context.Subjects.SingleOrDefault(x => x.Id == id);
+                if (existigSubject != null)
+                {
+                    existigSubject.SubjectName = updateSubjectDto.SubjectName;
+                    existigSubject.NumberOfHours = updateSubjectDto.NumberOfHours;
+                    existigSubject.Description = updateSubjectDto.Description;
+                    existigSubject.LastUpdatedTime=DateTime.Now;
+
+                    context.Subjects.Update(existigSubject);
+                    context.SaveChanges();
+
+                    return StatusCode(200,existigSubject.Id);
+
+                }
+                return NotFound();
+            }
 
     }
 }
